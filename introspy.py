@@ -39,12 +39,14 @@ def main(argv):
         action="store_true",
         help="List all traced calls (no signature analysis\
         performed)")
-    cli_group.add_argument("-g", "--group",
-        choices=APIGroups.API_GROUPS_LIST,
-        help="Filter by signature group")
-    cli_group.add_argument("-s", "--sub-group",
-        choices=APIGroups.API_SUBGROUPS_LIST,
-        help="Filter by signature sub-group")
+
+# TODO: need to rework how API groups work on android before this can work
+#    cli_group.add_argument("-g", "--group",
+#        choices=APIGroups.API_GROUPS_LIST,
+#        help="Filter by signature group")
+#    cli_group.add_argument("-s", "--sub-group",
+#        choices=APIGroups.API_SUBGROUPS_LIST,
+#        help="Filter by signature sub-group")
 
     stats_group = parser.add_argument_group('iOS-only options')
     stats_group.add_argument("-i", "--info",
