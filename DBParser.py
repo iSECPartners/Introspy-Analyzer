@@ -7,7 +7,7 @@ import datetime
 from TracedCall import TracedCall
 from IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
 from IOS_Utils.APIGroups import APIGroups
-
+from IOS_Utils.Signature import Signature
 
 
 class DBParser(object):
@@ -41,11 +41,11 @@ class DBParser(object):
                     argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
 
                 else:
-                    callId = rowid,
-                    group = APIGroups.find_group(self.subgroup)
+                    callId = rowid
+                    clazz = unicode(row[0])
+                    method = unicode(row[1])
                     subgroup = APIGroups.find_subgroup(clazz, method)
-                    clazz = unicode(row[0]),
-                    method = unicode(row[1]),
+                    group = APIGroups.find_group(subgroup)
                     argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
                     rowid += 1
 

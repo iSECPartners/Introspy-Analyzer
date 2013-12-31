@@ -68,7 +68,7 @@ def main(argv):
 
 
     androidDb = False
-    if args.platform is 'android':
+    if 'android' in args.platform:
         androidDb = True
         if args.delete:
             print 'Error: --platform was set to android but --delete can '
@@ -82,7 +82,7 @@ def main(argv):
             print 'Error: --platform was set to android but --info can '
             'only be used with ios databases.'
             return
-    elif args.platform is 'ios':
+    elif 'ios' in args.platform:
         pass
     else:
         print 'Error: --platform was not set to "ios" or "android".'
