@@ -114,7 +114,7 @@ def main(argv):
 
     # Generate output
     if args.outdir: # Generate an HTML report
-        reportGen = HTMLReportGenerator(analyzedDB)
+        reportGen = HTMLReportGenerator(analyzedDB, androidDb)
         reportGen.write_report_to_directory(args.outdir)
 
     else: # Print DB info to the console

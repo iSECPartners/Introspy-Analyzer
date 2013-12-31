@@ -1,10 +1,6 @@
 import shutil
 import os
 
-from IOS_Utils.APIGroups import APIGroups
-from DBAnalyzer import DBAnalyzer
-from DBParser import DBParser
-
 
 class HTMLReportGenerator:
     """
@@ -15,16 +11,22 @@ class HTMLReportGenerator:
     FINDINGS_FILE_NAME =      'findings.js'
     API_GROUPS_FILE_NAME =    'apiGroups.js'
 
-    TEMPLATE_FOLDER = './html'
+    # TODO: merge the two templates
+    IOS_TEMPLATE_FOLDER = './html-ios'
+    ANDROID_TEMPLATE_FOLDER = './html-android'
 
 
-    def __init__(self, analyzedDB):
+    def __init__(self, analyzedDB, androidDb):
         self.analyzedDB = analyzedDB
+        self.androidDb = androidDb
 
 
     def write_report_to_directory(self, outDir):
         # Copy the template
-        shutil.copytree(self.TEMPLATE_FOLDER, outDir)
+        if self.androidDb:
+            shutil.copytree(self.ANDROID_TEMPLATE_FOLDER, outDir)
+        else:
+            shutil.copytree(self.IOS_TEMPLATE_FOLDER, outDir)
 
         # Copy the DB file
         shutil.copy(self.analyzedDB.dbPath, outDir)
