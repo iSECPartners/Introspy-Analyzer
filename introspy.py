@@ -23,6 +23,11 @@ def main(argv):
         "generation tool for databases created using Introspy-iOS and "
         "Introspy-Android.", version=__version__)
 
+    platform_group = parser.add_argument_group('platform options')
+    platform_group.add_argument("-p", "--platform",
+        help="Specify the type of database; should be set to \"ios\" or "
+        "\"android\".")
+
     html_group = parser.add_argument_group('HTML reporting options')
     html_group.add_argument("-o", "--outdir",
         help="Generate an HTML report and write it to the\
@@ -41,7 +46,7 @@ def main(argv):
         choices=APIGroups.API_SUBGROUPS_LIST,
         help="Filter by signature sub-group")
 
-    stats_group = parser.add_argument_group('iOS-only command-line options')
+    stats_group = parser.add_argument_group('iOS-only options')
     stats_group.add_argument("-i", "--info",
         choices=['urls', 'files'],#, 'keys'],
 	help="Enumerate URLs or files accessed within the traced calls")#' and keychain items, etc.")
