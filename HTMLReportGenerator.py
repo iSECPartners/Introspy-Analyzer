@@ -1,10 +1,6 @@
 import shutil
 import os
 
-from IOS_Utils.APIGroups import APIGroups
-from DBAnalyzer import DBAnalyzer
-from DBParser import DBParser
-
 
 class HTMLReportGenerator:
     """
@@ -15,16 +11,35 @@ class HTMLReportGenerator:
     FINDINGS_FILE_NAME =      'findings.js'
     API_GROUPS_FILE_NAME =    'apiGroups.js'
 
-    TEMPLATE_FOLDER = './html'
+    # TODO: merge the two templates and get rid of this
+    HTML_TEMPLATE_PATH = os.path.abspath('html')
+    ANDROID_TEMPLATE = 'report-android.html'
+    IOS_TEMPLATE = 'report-ios.html'
+    FINAL_TEMPLATE = 'report.html'
 
 
-    def __init__(self, analyzedDB):
+    def __init__(self, analyzedDB, androidDb):
         self.analyzedDB = analyzedDB
+        self.androidDb = androidDb
 
 
     def write_report_to_directory(self, outDir):
-        # Copy the template
-        shutil.copytree(self.TEMPLATE_FOLDER, outDir)
+
+        # Copy the HTML template
+        shutil.copytree(os.path.abspath(self.HTML_TEMPLATE_PATH), outDir)
+
+
+        if self.androidDb:
+            shutil.move(os.path.join(outDir, self.ANDROID_TEMPLATE),
+                        os.path.join(outDir, self.FINAL_TEMPLATE))
+            # Remove the wrong template file
+            os.remove(os.path.join(outDir, self.IOS_TEMPLATE))
+        else:
+            shutil.move(os.path.join(outDir, self.IOS_TEMPLATE),
+                        os.path.join(outDir, self.FINAL_TEMPLATE))
+            # Remove the wrong template file
+            os.remove(os.path.join(outDir, self.ANDROID_TEMPLATE))
+
 
         # Copy the DB file
         shutil.copy(self.analyzedDB.dbPath, outDir)

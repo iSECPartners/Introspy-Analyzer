@@ -6,42 +6,57 @@ import datetime
 
 from TracedCall import TracedCall
 from IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
+from IOS_Utils.APIGroups import APIGroups
 from IOS_Utils.Signature import Signature
 
 
 class DBParser(object):
     """Parses an Introspy DB to extract all function calls stored in it."""
 
-    def __init__(self, dbPath):
+    def __init__(self, dbPath, androidDb):
         """
         Opens the SQLite database at dbPath and extracts all traced calls from it.
         """
-# self, callId, group, subgroup, clazz, method, argsAndReturnValue
+
         self.dbPath = dbPath
         self.tracedCalls = []
         self.apiGroups = {}
         SqlConn = None
         try:
+            rowid = 1
             SqlConn = sqlite3.connect(dbPath).cursor()
             SqlConn.execute("SELECT * FROM tracedCalls")
             for row in SqlConn:
 
-                group = unicode(row[1]).encode('ascii','ignore').capitalize()
-                subgroup = unicode(row[2]).encode('ascii','ignore').capitalize()
+                #TODO: clean this up once android and ios DBs are the same
+                if androidDb:
+                    callId = row[0]
+                    group = unicode(row[1]).encode('ascii','ignore').capitalize()
+                    subgroup = unicode(row[2]).encode('ascii','ignore').capitalize()
+                    clazz = unicode(row[3])
+                    #Hack to display warnings... awful  TODO: remove this
+                    method = unicode(row[4])
+                    if 'W' in unicode(row[6]):
+                        method += ' - [WARNING :' +  unicode(row[7]) + "]"
+                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
 
-                # Store the call
-                #Hack to display warnings  TODO: remove this
-                method = unicode(row[4])
-                if 'W' in unicode(row[6]):
-                    method += ' - [WARNING :' +  unicode(row[7]) + "]"
+                else:
+                    callId = rowid
+                    clazz = unicode(row[0])
+                    method = unicode(row[1])
+                    subgroup = APIGroups.find_subgroup(clazz, method)
+                    group = APIGroups.find_group(subgroup)
+                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
+                    rowid += 1
+
 
                 self.tracedCalls.append(TracedCall(
-                    callId = row[0],
+                    callId = callId,
                     group = group,
                     subgroup = subgroup,
-                    clazz = unicode(row[3]),
+                    clazz = clazz,
                     method = method,
-                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))))
+                    argsAndReturnValue = argsAndReturnValue))
 
                 # Store the api group and subgroup
                 if group in self.apiGroups.keys():
