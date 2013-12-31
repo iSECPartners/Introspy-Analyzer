@@ -58,7 +58,7 @@ def main(argv):
         "The db argument should be the device's IP address or hostname.")
     stats_group.add_argument("-f", "--fetch",
         action="store_true",
-        help="Directly fetch an introspy DB from a remote iOS device using SSH. "
+        help="Fetch an introspy DB from a remote iOS device using SSH. "
         "The db argument should be the device's IP address or hostname.")
 
     parser.add_argument("db",
@@ -66,6 +66,25 @@ def main(argv):
         "address or hostname when using --fetch.")
     args = parser.parse_args()
 
+
+    if args.platform is 'android':
+        if args.delete:
+            print 'Error: --platform was set to android but --delete can '
+            'only be used with ios databases.'
+            return
+        if args.fetch:
+            print 'Error: --platform was set to android but --fetch can '
+            'only be used with ios databases.'
+            return
+        if args.fetch:
+            print 'Error: --platform was set to android but --info can '
+            'only be used with ios databases.'
+            return
+    elif args.platform is 'ios':
+        pass
+    else:
+        print 'Error: --platform was not set to "ios" or "android".'
+        return
 
     if args.delete:
         # Just delete DBs on the device and quit
