@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-from IOS_Utils.APIGroups import APIGroups
 
 
 class TracedCall:

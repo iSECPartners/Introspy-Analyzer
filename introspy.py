@@ -12,7 +12,6 @@ import os
 from argparse import ArgumentParser
 from DBAnalyzer import DBAnalyzer
 from HTMLReportGenerator import HTMLReportGenerator
-from IOS_Utils.APIGroups import APIGroups
 from IOS_Utils.ScpClient import ScpClient
 
 
@@ -67,7 +66,10 @@ def main(argv):
     args = parser.parse_args()
 
 
+
+    androidDb = False
     if args.platform is 'android':
+        androidDb = True
         if args.delete:
             print 'Error: --platform was set to android but --delete can '
             'only be used with ios databases.'
@@ -106,7 +108,8 @@ def main(argv):
     if not os.path.exists(db_path): # Nice race condition
         print 'Error: Could not find the DB file.'
         return
-    analyzedDB = DBAnalyzer(db_path)
+
+    analyzedDB = DBAnalyzer(db_path, androidDb)
 
 
     # Generate output
