@@ -1,6 +1,7 @@
 import subprocess
 from sys import exit
-from ntpath import basename
+from os.path import basename, isfile
+
 
 class ScpClient:
     """
@@ -18,7 +19,9 @@ class ScpClient:
     	    stderr=subprocess.PIPE)
         dbs, err = proc.communicate()
         # something went wrong
-        if err or len(dbs) is 0:
+        # Can't rely on what's in err as you can get stuff in stderr even with a successful transfer
+        # For example "Saving password to keychain failed" on OS X
+        if len(dbs) is 0:
             print "Couldn't find any introspy databases."
             exit(0)
         # remove local and parent directory entries
@@ -32,13 +35,14 @@ class ScpClient:
     def select_and_fetch_db(self):
         remote_db_path = self.select_db()
         cmd = "scp %s:./%s ./" % (self.cnx_str, remote_db_path)
-	print cmd
+
         proc = subprocess.Popen(cmd.split(),
      	    stdout=subprocess.PIPE,
       	    stderr=subprocess.PIPE)
         out, err = proc.communicate()
+
         # something went wrong
-        if err:
+        if not isfile(basename(remote_db_path)):
             print "Error copying file from remote device."
             exit(0)
         return basename(remote_db_path)
@@ -50,8 +54,9 @@ class ScpClient:
     	    stderr=subprocess.PIPE)
         dbs, err = proc.communicate()
         # something went wrong
-        if err:
-            print "Error removing introspy dbs."
-            exit(0)
+        # err may contain data although the delete was successful
+        #if err:
+        #    print "Error removing introspy dbs."
+        #    exit(0)
         print "Removed all introspy dbs."
 
