@@ -66,6 +66,18 @@ def main(argv):
     args = parser.parse_args()
 
 
+    if not args.platform:
+        print 'Error: --platform was not set to "ios" or "android".'
+        return
+
+    #if args.fetch and not args.outdir and not args.info:
+    #    print 'Error: specify an output folder using -o.'
+    #    return
+
+
+    #if not args.outdir and not args.info and not args.delete and not args.fetch and not args.list:
+    #    print 'Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.'
+    #    return
 
     androidDb = False
     if 'android' in args.platform:
@@ -82,11 +94,6 @@ def main(argv):
             print 'Error: --platform was set to android but --info can '
             'only be used with ios databases.'
             return
-    elif 'ios' in args.platform:
-        pass
-    else:
-        print 'Error: --platform was not set to "ios" or "android".'
-        return
 
     if args.delete:
         # Just delete DBs on the device and quit
@@ -101,7 +108,6 @@ def main(argv):
     else:
         # Get the introspy DB from a local file
         db_path = args.db
-
 
     # Process the DB
     # Make sure it's there
@@ -131,10 +137,11 @@ def main(argv):
 
         elif args.list: # Print all traced calls
             # TODO: Call print() here instead of inside the method
-            analyzedDB.get_traced_calls_as_text(args.group, args.sub_group)
+            #analyzedDB.get_traced_calls_as_text(args.group, args.sub_group)
+            analyzedDB.get_traced_calls_as_text()
 
         else: # Print all findings
-            analyzedDB.get_findings_as_text(args.group, args.sub_group)
+            analyzedDB.get_findings_as_text()
 
 
 if __name__ == "__main__":
