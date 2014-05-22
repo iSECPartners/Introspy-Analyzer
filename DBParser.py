@@ -115,7 +115,8 @@ class DBParser(object):
         urlsList = []
         for call in self.tracedCalls:
             if 'request' in call.argsAndReturnValue['arguments']:
-                urlsList.append(call.argsAndReturnValue['arguments']['request']['URL']['absoluteString'])
+                if call.argsAndReturnValue['arguments']['request']['URL']:
+                    urlsList.append(call.argsAndReturnValue['arguments']['request']['URL']['absoluteString'])
         # Sort and remove duplicates
         urlsList = dict(map(None,urlsList,[])).keys()
         urlsList.sort()
@@ -181,7 +182,9 @@ class DBParser(object):
             if arg in IOS_ENUM_LIST:
                 try:
                     if 'mask' in IOS_ENUM_LIST[arg]:
-                        return IOS_ENUM_LIST[arg][value] & IOS_ENUM_LIST[arg]['mask']
+                        has_flag = value & IOS_ENUM_LIST[arg]['mask']
+                        if has_flag:
+                            return IOS_ENUM_LIST[arg][value]
                     else:
                         return IOS_ENUM_LIST[arg][value]
                 except KeyError:
