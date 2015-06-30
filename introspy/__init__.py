@@ -11,9 +11,10 @@ import sys
 import os
 from argparse import ArgumentParser
 
-from DBAnalyzer import DBAnalyzer
-from HTMLReportGenerator import HTMLReportGenerator
-from IOS_Utils.ScpClient import ScpClient
+from .DBAnalyzer import DBAnalyzer
+from .DBParser import DBParser
+from .HTMLReportGenerator import HTMLReportGenerator
+from .IOS_Utils.ScpClient import ScpClient
 
 
 def main(argv=None):

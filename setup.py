@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import os
-from setuptools import setup
+from setuptools import setup, find_packages
 
 
 original_dir = os.getcwd()
@@ -10,8 +10,9 @@ try:
     setup(
         name="Introspy-Analyzer",
         version=__import__("introspy").__version__,
-        packages=['introspy'],
-        package_data={'html': 'html'},
+        packages=find_packages(),
+        include_package_data=True,
+        zip_safe=False,
 
         # metadata for upload to PyPI
         author=__import__("introspy").__author__,
