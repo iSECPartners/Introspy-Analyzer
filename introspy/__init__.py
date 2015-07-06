@@ -7,15 +7,19 @@ __author__    = "Tom Daniels & Alban Diquet"
 __license__   = "See ../LICENSE"
 __copyright__ = "Copyright 2013, iSEC Partners, Inc."
 
-from sys import argv
+import sys
 import os
 from argparse import ArgumentParser
-from DBAnalyzer import DBAnalyzer
-from HTMLReportGenerator import HTMLReportGenerator
-from IOS_Utils.ScpClient import ScpClient
+
+from .DBAnalyzer import DBAnalyzer
+from .DBParser import DBParser
+from .HTMLReportGenerator import HTMLReportGenerator
+from .IOS_Utils.ScpClient import ScpClient
 
 
-def main(argv):
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
 
     # Parse command line
     parser = ArgumentParser(description="Introspy-Analyzer: Report "
@@ -142,7 +146,3 @@ def main(argv):
 
         else: # Print all findings
             analyzedDB.get_findings_as_text()
-
-
-if __name__ == "__main__":
-    main(argv[1:])

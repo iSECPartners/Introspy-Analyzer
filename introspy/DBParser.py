@@ -4,10 +4,10 @@ import json
 import plistlib
 import datetime
 
-from TracedCall import TracedCall
-from IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
-from IOS_Utils.APIGroups import APIGroups
-from IOS_Utils.Signature import Signature
+from .TracedCall import TracedCall
+from .IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
+from .IOS_Utils.APIGroups import APIGroups
+from .IOS_Utils.Signature import Signature
 
 
 class DBParser(object):

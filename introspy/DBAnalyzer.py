@@ -1,6 +1,7 @@
 from json import dumps
-from IOS_Utils.IOS_SIGNATURES import IOS_SIGNATURES
-from DBParser import DBParser
+
+from .DBParser import DBParser
+from .IOS_Utils.IOS_SIGNATURES import IOS_SIGNATURES
 
 
 class DBAnalyzer(DBParser):
