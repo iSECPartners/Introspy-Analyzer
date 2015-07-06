@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+from __future__ import print_function
 import sqlite3
 import json
 import plistlib
 import datetime
+import six
 
 from .TracedCall import TracedCall
 from .IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
@@ -31,22 +33,28 @@ class DBParser(object):
                 #TODO: clean this up once android and ios DBs are the same
                 if androidDb:
                     callId = row[0]
-                    group = unicode(row[1]).encode('ascii','ignore').capitalize()
-                    subgroup = unicode(row[2]).encode('ascii','ignore').capitalize()
-                    clazz = unicode(row[3])
+                    group = six.u(row[1]).encode('ascii','ignore').capitalize()
+                    subgroup = six.u(row[2]).encode('ascii','ignore').capitalize()
+                    clazz = six.u(row[3])
                     #Hack to display warnings... awful  TODO: remove this
-                    method = unicode(row[4])
-                    if 'W' in unicode(row[6]):
-                        method += ' - [WARNING :' +  unicode(row[7]) + "]"
-                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
+                    method = six.u(row[4])
+                    if 'W' in six.u(row[6]):
+                        method += ' - [WARNING :' +  six.u(row[7]) + "]"
+                    if six.PY2:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
+                    else:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromBytes(row[5].encode('utf-8')))
 
                 else:
                     callId = rowid
-                    clazz = unicode(row[0])
-                    method = unicode(row[1])
+                    clazz = row[0]
+                    method = row[1]
                     subgroup = APIGroups.find_subgroup(clazz, method)
                     group = APIGroups.find_group(subgroup)
-                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
+                    if six.PY2:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
+                    else:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromBytes(row[2].encode('utf-8')))
                     rowid += 1
 
 
@@ -65,7 +73,7 @@ class DBParser(object):
                     self.apiGroups[group] = [subgroup]
 
         except sqlite3.Error as e:
-            #print "Fatal error: %s" % e
+            #print("Fatal error: %s" % e)
             raise
 
         finally:
@@ -85,7 +93,7 @@ class DBParser(object):
             if subgroup and call.subgroup.lower() != subgroup.lower():
                 continue
 
-            print "  %s" % call
+            print("  %s" % call)
 
 
     def get_traced_calls_as_JSON(self):
@@ -171,7 +179,7 @@ class DBParser(object):
         """Makes a single value easier to read."""
         if isinstance(value, plistlib.Data):
             try: # Does it seem to be ASCII ?
-                return value.data.encode('ascii')
+                return value.data.decode('ascii')
             except UnicodeDecodeError: # No => base64 encode it
                 return value.asBase64(maxlinelength=1000000).strip()
         elif isinstance(value, datetime.datetime):

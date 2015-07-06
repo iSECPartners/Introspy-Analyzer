@@ -1,5 +1,5 @@
-from SignatureFilters import MethodsFilter, ArgumentsFilter, ArgumentsNotSetFilter
-from Signature import Signature
+from .SignatureFilters import MethodsFilter, ArgumentsFilter, ArgumentsNotSetFilter
+from .Signature import Signature
 
 
 # Global list of signatures for iOS apps

@@ -1,3 +1,4 @@
+from __future__ import print_function
 from json import dumps
 
 from .DBParser import DBParser
@@ -18,7 +19,6 @@ class DBAnalyzer(DBParser):
         for sig in signatures:
             self.findings.append((sig, sig.find_matching_calls(self.tracedCalls)))
 
-
     def get_findings_as_text(self, group=None, subgroup=None):
         """
         Returns the list of findings belonging to the supplied API group and/or subgroup as printable text.
@@ -31,9 +31,9 @@ class DBAnalyzer(DBParser):
                 if subgroup and signature.subgroup.lower() != subgroup.lower():
                     continue
 
-                print "# %s" % signature if isinstance(signature, str) else signature.description
+                print("# %s" % signature if isinstance(signature, str) else signature.description)
                 for traced_call in matching_calls:
-                    print "  %s" % traced_call
+                    print("  %s" % traced_call)
 
 
     def get_findings_as_JSON(self):

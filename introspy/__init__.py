@@ -1,4 +1,6 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 
 """ Command-line parser for an introspy generated db. """
 
@@ -24,7 +26,7 @@ def main(argv=None):
     # Parse command line
     parser = ArgumentParser(description="Introspy-Analyzer: Report "
         "generation tool for databases created using Introspy-iOS and "
-        "Introspy-Android.", version=__version__)
+        "Introspy-Android.")
 
     platform_group = parser.add_argument_group('platform options')
     platform_group.add_argument("-p", "--platform",
@@ -71,31 +73,31 @@ def main(argv=None):
 
 
     if not args.platform:
-        print 'Error: --platform was not set to "ios" or "android".'
+        print('Error: --platform was not set to "ios" or "android".')
         return
 
     #if args.fetch and not args.outdir and not args.info:
-    #    print 'Error: specify an output folder using -o.'
+    #    print('Error: specify an output folder using -o.')
     #    return
 
 
     #if not args.outdir and not args.info and not args.delete and not args.fetch and not args.list:
-    #    print 'Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.'
+    #    print('Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.')
     #    return
 
     androidDb = False
     if 'android' in args.platform:
         androidDb = True
         if args.delete:
-            print 'Error: --platform was set to android but --delete can '
+            print('Error: --platform was set to android but --delete can ')
             'only be used with ios databases.'
             return
         if args.fetch:
-            print 'Error: --platform was set to android but --fetch can '
+            print('Error: --platform was set to android but --fetch can ')
             'only be used with ios databases.'
             return
         if args.fetch:
-            print 'Error: --platform was set to android but --info can '
+            print('Error: --platform was set to android but --info can ')
             'only be used with ios databases.'
             return
 
@@ -116,7 +118,7 @@ def main(argv=None):
     # Process the DB
     # Make sure it's there
     if not os.path.exists(db_path): # Nice race condition
-        print 'Error: Could not find the DB file.'
+        print('Error: Could not find the DB file.')
         return
 
     analyzedDB = DBAnalyzer(db_path, androidDb)
@@ -132,10 +134,10 @@ def main(argv=None):
         if args.info: # Enumerate URLs/files
             if args.info == "urls":
                 for url in analyzedDB.get_all_URLs():
-                    print url
+                    print(url)
             elif args.info == "files":
                 for path in analyzedDB.get_all_files():
-                    print path
+                    print(path)
             #elif args.info == "keys":
             # TODO
 
