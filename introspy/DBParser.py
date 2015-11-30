@@ -126,7 +126,7 @@ class DBParser(object):
                 if call.argsAndReturnValue['arguments']['request']['URL']:
                     urlsList.append(call.argsAndReturnValue['arguments']['request']['URL']['absoluteString'])
         # Sort and remove duplicates
-        urlsList = dict(map(None,urlsList,[])).keys()
+        urlsList = list(set(urlsList))
         urlsList.sort()
         return urlsList
 
@@ -140,7 +140,7 @@ class DBParser(object):
             if 'path' in call.argsAndReturnValue['arguments']:
                 filesList.append(call.argsAndReturnValue['arguments']['path'])
         # Sort and remove duplicates
-        filesList = dict(map(None,filesList,[])).keys()
+        filesList = list(set(filesList))
         filesList.sort()
         return filesList
 
