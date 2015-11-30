@@ -8,8 +8,8 @@ import six
 
 from .TracedCall import TracedCall
 from .IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
-from .IOS_Utils.APIGroups import APIGroups
 from .IOS_Utils.Signature import Signature
+from .IOS_Utils import APIGroups
 
 
 class DBParser(object):
