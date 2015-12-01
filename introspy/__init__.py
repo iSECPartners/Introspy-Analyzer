@@ -29,22 +29,22 @@ def main(argv=None):
 
     platform_group = parser.add_argument_group('platform options')
     platform_group.add_argument("-p", "--platform",
-                                help="Specify the type of database; should be set to \"ios\" or "
-                                "\"android\".",
+                                help="Specify the type of database; should be"
+                                "set to \"ios\" or " "\"android\".",
                                 default="ios",
                                 choices=["ios", "android"])
 
     html_group = parser.add_argument_group('HTML reporting options')
     html_group.add_argument("-o", "--outdir",
-        help="Generate an HTML report and write it to the\
-        specified directory (ignores all other command line\
-        options).")
+        help="Generate an HTML report and write it to the "
+        "specified directory (ignores all other command line "
+        "options).")
 
     cli_group = parser.add_argument_group('command-line reporting options')
     cli_group.add_argument("-l", "--list",
         action="store_true",
-        help="List all traced calls (no signature analysis\
-        performed)")
+        help="List all traced calls (no signature analysis "
+        "performed)")
 
 # TODO: need to rework how API groups work on android before this can work
 #    cli_group.add_argument("-g", "--group",
@@ -85,16 +85,16 @@ def main(argv=None):
     if args.platform == "android":
         is_androidDb = True
         if args.delete:
-            print('Error: --platform was set to android but --delete can '
-            'only be used with ios databases.')
+            print("Error: --platform was set to android but --delete can "
+            "only be used with ios databases.")
             return
         if args.fetch:
-            print('Error: --platform was set to android but --fetch can '
-            'only be used with ios databases.')
+            print("Error: --platform was set to android but --fetch can "
+            "only be used with ios databases.")
             return
         if args.fetch:
-            print('Error: --platform was set to android but --info can '
-            'only be used with ios databases.')
+            print("Error: --platform was set to android but --info can "
+            "only be used with ios databases.")
             return
 
     if args.delete:
