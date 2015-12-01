@@ -85,16 +85,16 @@ def main(argv=None):
     if args.platform == "android":
         is_androidDb = True
         if args.delete:
-            print('Error: --platform was set to android but --delete can ')
-            'only be used with ios databases.'
+            print('Error: --platform was set to android but --delete can '
+            'only be used with ios databases.')
             return
         if args.fetch:
-            print('Error: --platform was set to android but --fetch can ')
-            'only be used with ios databases.'
+            print('Error: --platform was set to android but --fetch can '
+            'only be used with ios databases.')
             return
         if args.fetch:
-            print('Error: --platform was set to android but --info can ')
-            'only be used with ios databases.'
+            print('Error: --platform was set to android but --info can '
+            'only be used with ios databases.')
             return
 
     if args.delete:
