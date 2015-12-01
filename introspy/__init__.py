@@ -4,7 +4,7 @@ from __future__ import print_function
 
 """ Command-line parser for an introspy generated db. """
 
-__version__   = '0.3.0'
+__version__   = '0.4.0'
 __author__    = "Tom Daniels & Alban Diquet"
 __license__   = "See ../LICENSE"
 __copyright__ = "Copyright 2013, iSEC Partners, Inc."
