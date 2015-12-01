@@ -15,7 +15,7 @@ from .IOS_Utils import APIGroups
 class DBParser(object):
     """Parses an Introspy DB to extract all function calls stored in it."""
 
-    def __init__(self, dbPath, androidDb):
+    def __init__(self, dbPath, is_androidDb):
         """
         Opens the SQLite database at dbPath and extracts all traced calls from it.
         """
@@ -31,7 +31,7 @@ class DBParser(object):
             for row in SqlConn:
 
                 #TODO: clean this up once android and ios DBs are the same
-                if androidDb:
+                if is_androidDb:
                     callId = row[0]
                     group = six.u(row[1]).encode('ascii','ignore').capitalize()
                     subgroup = six.u(row[2]).encode('ascii','ignore').capitalize()

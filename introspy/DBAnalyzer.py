@@ -10,9 +10,9 @@ class DBAnalyzer(DBParser):
     Parses and analyzes an introspy DB using a supplied set of signatures.
     """
 
-    def __init__(self, dbPath, androidDb, signatures=IOS_SIGNATURES):
+    def __init__(self, dbPath, is_androidDb, signatures=IOS_SIGNATURES):
         # Parse the DB
-        super(DBAnalyzer, self).__init__(dbPath, androidDb)
+        super(DBAnalyzer, self).__init__(dbPath, is_androidDb)
 
         # Try each signature on the list of traced calls
         self.findings = []

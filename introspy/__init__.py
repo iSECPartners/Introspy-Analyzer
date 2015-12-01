@@ -14,7 +14,6 @@ import os
 from argparse import ArgumentParser
 
 from .DBAnalyzer import DBAnalyzer
-from .DBParser import DBParser
 from .HTMLReportGenerator import HTMLReportGenerator
 from .IOS_Utils.ScpClient import ScpClient
 
@@ -56,7 +55,7 @@ def main(argv=None):
     stats_group = parser.add_argument_group('iOS-only options')
     stats_group.add_argument("-i", "--info",
         choices=['urls', 'files'],#, 'keys'],
-	help="Enumerate URLs or files accessed within the traced calls")#' and keychain items, etc.")
+        help="Enumerate URLs or files accessed within the traced calls")#' and keychain items, etc.")
     stats_group.add_argument("-d", "--delete",
         action="store_true",
         help="Remove all introspy databases on a given remote device using SSH. "
@@ -85,9 +84,9 @@ def main(argv=None):
     #    print('Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.')
     #    return
 
-    androidDb = False
-    if 'android' in args.platform:
-        androidDb = True
+    is_androidDb = False
+    if args.platform == "android":
+        is_androidDb = True
         if args.delete:
             print('Error: --platform was set to android but --delete can ')
             'only be used with ios databases.'
@@ -121,12 +120,12 @@ def main(argv=None):
         print('Error: Could not find the DB file.')
         return
 
-    analyzedDB = DBAnalyzer(db_path, androidDb)
+    analyzedDB = DBAnalyzer(db_path, is_androidDb)
 
 
     # Generate output
     if args.outdir: # Generate an HTML report
-        reportGen = HTMLReportGenerator(analyzedDB, androidDb)
+        reportGen = HTMLReportGenerator(analyzedDB, is_androidDb)
         reportGen.write_report_to_directory(args.outdir)
 
     else: # Print DB info to the console
