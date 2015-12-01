@@ -1,5 +1,4 @@
-
-from APIGroups import APIGroups
+from . import APIGroups
 
 
 class Signature(object):

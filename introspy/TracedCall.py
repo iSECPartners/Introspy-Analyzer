@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 
-
 class TracedCall:
     """One traced function call extracted from an Introspy DB."""
 
@@ -37,7 +36,7 @@ class TracedCall:
     def _walk_dict(self, d, level=0):
         """Goes through a dictionnary of arguments and prints the content of each node."""
         arg_str = ""
-        items = d.items()
+        items = list(d.items())
         items.sort()
         for v in items:
             if isinstance(v[1], dict):

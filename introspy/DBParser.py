@@ -1,19 +1,20 @@
-#!/usr/bin/env python
+from __future__ import print_function
 import sqlite3
 import json
 import plistlib
 import datetime
+import six
 
 from .TracedCall import TracedCall
 from .IOS_Utils.IOS_ENUM_LIST import IOS_ENUM_LIST
-from .IOS_Utils.APIGroups import APIGroups
 from .IOS_Utils.Signature import Signature
+from .IOS_Utils import APIGroups
 
 
 class DBParser(object):
     """Parses an Introspy DB to extract all function calls stored in it."""
 
-    def __init__(self, dbPath, androidDb):
+    def __init__(self, dbPath, is_androidDb):
         """
         Opens the SQLite database at dbPath and extracts all traced calls from it.
         """
@@ -29,34 +30,39 @@ class DBParser(object):
             for row in SqlConn:
 
                 #TODO: clean this up once android and ios DBs are the same
-                if androidDb:
+                if is_androidDb:
                     callId = row[0]
-                    group = unicode(row[1]).encode('ascii','ignore').capitalize()
-                    subgroup = unicode(row[2]).encode('ascii','ignore').capitalize()
-                    clazz = unicode(row[3])
+                    group = six.u(row[1]).encode('ascii', 'ignore').capitalize()
+                    subgroup = six.u(row[2]).encode('ascii', 'ignore').capitalize()
+                    clazz = six.u(row[3])
                     #Hack to display warnings... awful  TODO: remove this
-                    method = unicode(row[4])
-                    if 'W' in unicode(row[6]):
-                        method += ' - [WARNING :' +  unicode(row[7]) + "]"
-                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
+                    method = six.u(row[4])
+                    if 'W' in six.u(row[6]):
+                        method += ' - [WARNING :' + six.u(row[7]) + "]"
+                    if six.PY2:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
+                    else:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromBytes(row[5].encode('utf-8')))
 
                 else:
                     callId = rowid
-                    clazz = unicode(row[0])
-                    method = unicode(row[1])
+                    clazz = row[0]
+                    method = row[1]
                     subgroup = APIGroups.find_subgroup(clazz, method)
                     group = APIGroups.find_group(subgroup)
-                    argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
+                    if six.PY2:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[2].encode('utf-8')))
+                    else:
+                        argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromBytes(row[2].encode('utf-8')))
                     rowid += 1
 
-
                 self.tracedCalls.append(TracedCall(
-                    callId = callId,
-                    group = group,
-                    subgroup = subgroup,
-                    clazz = clazz,
-                    method = method,
-                    argsAndReturnValue = argsAndReturnValue))
+                    callId=callId,
+                    group=group,
+                    subgroup=subgroup,
+                    clazz=clazz,
+                    method=method,
+                    argsAndReturnValue=argsAndReturnValue))
 
                 # Store the api group and subgroup
                 if group in self.apiGroups.keys():
@@ -65,7 +71,7 @@ class DBParser(object):
                     self.apiGroups[group] = [subgroup]
 
         except sqlite3.Error as e:
-            #print "Fatal error: %s" % e
+            #print("Fatal error: %s" % e)
             raise
 
         finally:
@@ -85,13 +91,13 @@ class DBParser(object):
             if subgroup and call.subgroup.lower() != subgroup.lower():
                 continue
 
-            print "  %s" % call
+            print("  %s" % call)
 
 
     def get_traced_calls_as_JSON(self):
         """Returns the list of all traced calls as JSON."""
         tracedCalls_dict = {}
-        tracedCalls_dict['calls'] =  self.tracedCalls
+        tracedCalls_dict['calls'] = self.tracedCalls
         return json.dumps(tracedCalls_dict, default=self._json_serialize)
 
 
@@ -101,12 +107,12 @@ class DBParser(object):
         for groupName in self.apiGroups.keys():
             subgroupList = []
             for subgroupName in self.apiGroups[groupName]:
-                subgroupList.append({'name' : subgroupName})
+                subgroupList.append({'name': subgroupName})
 
-            groupList.append({'name' : groupName,
-                               'subgroups' : subgroupList })
+            groupList.append({'name': groupName,
+                              'subgroups': subgroupList})
 
-        apigroupsDict = {'groups' : groupList}
+        apigroupsDict = {'groups': groupList}
         return json.dumps(apigroupsDict, ensure_ascii=True)
 
 
@@ -118,7 +124,7 @@ class DBParser(object):
                 if call.argsAndReturnValue['arguments']['request']['URL']:
                     urlsList.append(call.argsAndReturnValue['arguments']['request']['URL']['absoluteString'])
         # Sort and remove duplicates
-        urlsList = dict(map(None,urlsList,[])).keys()
+        urlsList = list(set(urlsList))
         urlsList.sort()
         return urlsList
 
@@ -132,7 +138,7 @@ class DBParser(object):
             if 'path' in call.argsAndReturnValue['arguments']:
                 filesList.append(call.argsAndReturnValue['arguments']['path'])
         # Sort and remove duplicates
-        filesList = dict(map(None,filesList,[])).keys()
+        filesList = list(set(filesList))
         filesList.sort()
         return filesList
 
@@ -151,7 +157,9 @@ class DBParser(object):
 
 
     def _sanitize_args_dict(self, argsDict):
-        """Goes through a dict of arguments or return values and replaces specific values to make them easier to read."""
+        """
+        Goes through a dict of arguments or return values and replaces specific values to make them easier to read.
+        """
         for (arg, value) in argsDict.items():
             if isinstance(value, dict):
                 self._sanitize_args_dict(value)
@@ -171,7 +179,7 @@ class DBParser(object):
         """Makes a single value easier to read."""
         if isinstance(value, plistlib.Data):
             try: # Does it seem to be ASCII ?
-                return value.data.encode('ascii')
+                return value.data.decode('ascii')
             except UnicodeDecodeError: # No => base64 encode it
                 return value.asBase64(maxlinelength=1000000).strip()
         elif isinstance(value, datetime.datetime):

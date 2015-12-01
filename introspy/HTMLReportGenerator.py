@@ -18,9 +18,9 @@ class HTMLReportGenerator:
     FINAL_TEMPLATE = 'report.html'
 
 
-    def __init__(self, analyzedDB, androidDb):
+    def __init__(self, analyzedDB, is_androidDb):
         self.analyzedDB = analyzedDB
-        self.androidDb = androidDb
+        self.is_androidDb = is_androidDb
 
 
     def write_report_to_directory(self, outDir):
@@ -29,7 +29,7 @@ class HTMLReportGenerator:
         shutil.copytree(os.path.abspath(self.HTML_TEMPLATE_PATH), outDir)
 
 
-        if self.androidDb:
+        if self.is_androidDb:
             shutil.move(os.path.join(outDir, self.ANDROID_TEMPLATE),
                         os.path.join(outDir, self.FINAL_TEMPLATE))
             # Remove the wrong template file

@@ -1,8 +1,10 @@
 #!/usr/bin/env python
+from __future__ import print_function
+
 
 """ Command-line parser for an introspy generated db. """
 
-__version__   = '0.3.0'
+__version__   = '0.4.0'
 __author__    = "Tom Daniels & Alban Diquet"
 __license__   = "See ../LICENSE"
 __copyright__ = "Copyright 2013, iSEC Partners, Inc."
@@ -11,6 +13,7 @@ import sys
 import os
 from argparse import ArgumentParser
 
+# Promote classes
 from .DBAnalyzer import DBAnalyzer
 from .DBParser import DBParser
 from .HTMLReportGenerator import HTMLReportGenerator
@@ -24,24 +27,26 @@ def main(argv=None):
     # Parse command line
     parser = ArgumentParser(description="Introspy-Analyzer: Report "
         "generation tool for databases created using Introspy-iOS and "
-        "Introspy-Android.", version=__version__)
+        "Introspy-Android.")
 
     platform_group = parser.add_argument_group('platform options')
     platform_group.add_argument("-p", "--platform",
-        help="Specify the type of database; should be set to \"ios\" or "
-        "\"android\".")
+                                help="Specify the type of database; should be"
+                                "set to \"ios\" or " "\"android\".",
+                                default="ios",
+                                choices=["ios", "android"])
 
     html_group = parser.add_argument_group('HTML reporting options')
     html_group.add_argument("-o", "--outdir",
-        help="Generate an HTML report and write it to the\
-        specified directory (ignores all other command line\
-        options).")
+        help="Generate an HTML report and write it to the "
+        "specified directory (ignores all other command line "
+        "options).")
 
     cli_group = parser.add_argument_group('command-line reporting options')
     cli_group.add_argument("-l", "--list",
         action="store_true",
-        help="List all traced calls (no signature analysis\
-        performed)")
+        help="List all traced calls (no signature analysis "
+        "performed)")
 
 # TODO: need to rework how API groups work on android before this can work
 #    cli_group.add_argument("-g", "--group",
@@ -54,7 +59,7 @@ def main(argv=None):
     stats_group = parser.add_argument_group('iOS-only options')
     stats_group.add_argument("-i", "--info",
         choices=['urls', 'files'],#, 'keys'],
-	help="Enumerate URLs or files accessed within the traced calls")#' and keychain items, etc.")
+        help="Enumerate URLs or files accessed within the traced calls")#' and keychain items, etc.")
     stats_group.add_argument("-d", "--delete",
         action="store_true",
         help="Remove all introspy databases on a given remote device using SSH. "
@@ -69,34 +74,29 @@ def main(argv=None):
         "address or hostname when using --fetch.")
     args = parser.parse_args()
 
-
-    if not args.platform:
-        print 'Error: --platform was not set to "ios" or "android".'
-        return
-
     #if args.fetch and not args.outdir and not args.info:
-    #    print 'Error: specify an output folder using -o.'
+    #    print('Error: specify an output folder using -o.')
     #    return
 
 
     #if not args.outdir and not args.info and not args.delete and not args.fetch and not args.list:
-    #    print 'Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.'
+    #    print('Error: nothing to do; use -o, -i, -d, -l or -f to specify an action.')
     #    return
 
-    androidDb = False
-    if 'android' in args.platform:
-        androidDb = True
+    is_androidDb = False
+    if args.platform == "android":
+        is_androidDb = True
         if args.delete:
-            print 'Error: --platform was set to android but --delete can '
-            'only be used with ios databases.'
+            print("Error: --platform was set to android but --delete can "
+            "only be used with ios databases.")
             return
         if args.fetch:
-            print 'Error: --platform was set to android but --fetch can '
-            'only be used with ios databases.'
+            print("Error: --platform was set to android but --fetch can "
+            "only be used with ios databases.")
             return
         if args.fetch:
-            print 'Error: --platform was set to android but --info can '
-            'only be used with ios databases.'
+            print("Error: --platform was set to android but --info can "
+            "only be used with ios databases.")
             return
 
     if args.delete:
@@ -116,15 +116,15 @@ def main(argv=None):
     # Process the DB
     # Make sure it's there
     if not os.path.exists(db_path): # Nice race condition
-        print 'Error: Could not find the DB file.'
+        print('Error: Could not find the DB file.')
         return
 
-    analyzedDB = DBAnalyzer(db_path, androidDb)
+    analyzedDB = DBAnalyzer(db_path, is_androidDb)
 
 
     # Generate output
     if args.outdir: # Generate an HTML report
-        reportGen = HTMLReportGenerator(analyzedDB, androidDb)
+        reportGen = HTMLReportGenerator(analyzedDB, is_androidDb)
         reportGen.write_report_to_directory(args.outdir)
 
     else: # Print DB info to the console
@@ -132,10 +132,10 @@ def main(argv=None):
         if args.info: # Enumerate URLs/files
             if args.info == "urls":
                 for url in analyzedDB.get_all_URLs():
-                    print url
+                    print(url)
             elif args.info == "files":
                 for path in analyzedDB.get_all_files():
-                    print path
+                    print(path)
             #elif args.info == "keys":
             # TODO
 
