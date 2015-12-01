@@ -29,8 +29,10 @@ def main(argv=None):
 
     platform_group = parser.add_argument_group('platform options')
     platform_group.add_argument("-p", "--platform",
-        help="Specify the type of database; should be set to \"ios\" or "
-        "\"android\".")
+                                help="Specify the type of database; should be set to \"ios\" or "
+                                "\"android\".",
+                                default="ios",
+                                choices=["ios", "android"])
 
     html_group = parser.add_argument_group('HTML reporting options')
     html_group.add_argument("-o", "--outdir",
@@ -69,11 +71,6 @@ def main(argv=None):
         help="The Introspy-generated database to analyze, or the device's IP "
         "address or hostname when using --fetch.")
     args = parser.parse_args()
-
-
-    if not args.platform:
-        print('Error: --platform was not set to "ios" or "android".')
-        return
 
     #if args.fetch and not args.outdir and not args.info:
     #    print('Error: specify an output folder using -o.')
