@@ -35,16 +35,13 @@ class DBAnalyzer(DBParser):
                 for traced_call in matching_calls:
                     print("  %s" % traced_call)
 
-
     def get_findings_as_JSON(self):
         """Returns the list of findings as JSON."""
         findings_dict = {}
         findings_dict['findings'] = []
         for (sig, tracedCalls) in self.findings:
             if tracedCalls:
-                findings_dict['findings'].append({'signature' : sig,
-                'calls' : tracedCalls})
+                findings_dict['findings'].append({'signature': sig,
+                                                  'calls': tracedCalls})
 
         return dumps(findings_dict, default=self._json_serialize)
-
-

@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 from __future__ import print_function
 import sqlite3
 import json
@@ -33,13 +32,13 @@ class DBParser(object):
                 #TODO: clean this up once android and ios DBs are the same
                 if is_androidDb:
                     callId = row[0]
-                    group = six.u(row[1]).encode('ascii','ignore').capitalize()
-                    subgroup = six.u(row[2]).encode('ascii','ignore').capitalize()
+                    group = six.u(row[1]).encode('ascii', 'ignore').capitalize()
+                    subgroup = six.u(row[2]).encode('ascii', 'ignore').capitalize()
                     clazz = six.u(row[3])
                     #Hack to display warnings... awful  TODO: remove this
                     method = six.u(row[4])
                     if 'W' in six.u(row[6]):
-                        method += ' - [WARNING :' +  six.u(row[7]) + "]"
+                        method += ' - [WARNING :' + six.u(row[7]) + "]"
                     if six.PY2:
                         argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromString(row[5].encode('utf-8')))
                     else:
@@ -57,14 +56,13 @@ class DBParser(object):
                         argsAndReturnValue = self._sanitize_args_dict(plistlib.readPlistFromBytes(row[2].encode('utf-8')))
                     rowid += 1
 
-
                 self.tracedCalls.append(TracedCall(
-                    callId = callId,
-                    group = group,
-                    subgroup = subgroup,
-                    clazz = clazz,
-                    method = method,
-                    argsAndReturnValue = argsAndReturnValue))
+                    callId=callId,
+                    group=group,
+                    subgroup=subgroup,
+                    clazz=clazz,
+                    method=method,
+                    argsAndReturnValue=argsAndReturnValue))
 
                 # Store the api group and subgroup
                 if group in self.apiGroups.keys():
@@ -99,7 +97,7 @@ class DBParser(object):
     def get_traced_calls_as_JSON(self):
         """Returns the list of all traced calls as JSON."""
         tracedCalls_dict = {}
-        tracedCalls_dict['calls'] =  self.tracedCalls
+        tracedCalls_dict['calls'] = self.tracedCalls
         return json.dumps(tracedCalls_dict, default=self._json_serialize)
 
 
@@ -109,12 +107,12 @@ class DBParser(object):
         for groupName in self.apiGroups.keys():
             subgroupList = []
             for subgroupName in self.apiGroups[groupName]:
-                subgroupList.append({'name' : subgroupName})
+                subgroupList.append({'name': subgroupName})
 
-            groupList.append({'name' : groupName,
-                               'subgroups' : subgroupList })
+            groupList.append({'name': groupName,
+                              'subgroups': subgroupList})
 
-        apigroupsDict = {'groups' : groupList}
+        apigroupsDict = {'groups': groupList}
         return json.dumps(apigroupsDict, ensure_ascii=True)
 
 
@@ -159,7 +157,9 @@ class DBParser(object):
 
 
     def _sanitize_args_dict(self, argsDict):
-        """Goes through a dict of arguments or return values and replaces specific values to make them easier to read."""
+        """
+        Goes through a dict of arguments or return values and replaces specific values to make them easier to read.
+        """
         for (arg, value) in argsDict.items():
             if isinstance(value, dict):
                 self._sanitize_args_dict(value)
