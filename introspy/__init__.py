@@ -63,8 +63,6 @@ def main(argv=None):
         action="store_true",
         help="Fetch an introspy DB from a remote iOS device using SSH. "
         "The db argument should be the device's IP address or hostname.")
-    stats_group.add_argument("-P", "--port",
-        help="Specify a port for SSH.")
 
     parser.add_argument("db",
         help="The Introspy-generated database to analyze, or the device's IP "
@@ -103,13 +101,13 @@ def main(argv=None):
 
     if args.delete:
         # Just delete DBs on the device and quit
-        scp = ScpClient(ip=args.db, port=args.port)
+        scp = ScpClient(ip=args.db)
         scp.delete_remote_dbs()
         return
 
     if args.fetch:
         # Get the introspy DB from the device
-        scp = ScpClient(ip=args.db, port=args.port)
+        scp = ScpClient(ip=args.db)
         db_path = scp.select_and_fetch_db()
     else:
         # Get the introspy DB from a local file

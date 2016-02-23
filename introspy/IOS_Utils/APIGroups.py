@@ -11,8 +11,6 @@ class APIGroups:
     
     API_GROUPS_LIST = []
     API_SUBGROUPS_LIST = []
-
-    UNCLASSIFIED_GROUP = 'Unclassified'
     
     # Data Storage
     DATASTORAGE_GROUP = 'DataStorage'
@@ -132,12 +130,7 @@ class APIGroups:
             subgroup = cls.API_SUBGROUPS_MAP[clazz]
         except KeyError:
             # Fall back to using the method name and crash if we can't find it
-            try:
-                subgroup = cls.API_SUBGROUPS_MAP[method]
-            except KeyError:
-                # Try adding it under unclassified
-                subgroup = 'No subgroup'
-
+            subgroup = cls.API_SUBGROUPS_MAP[method]
         return subgroup
     
         
@@ -151,11 +144,7 @@ class APIGroups:
 
     @classmethod  
     def find_group(cls, subgroup):
-        try:
-            group = cls.API_GROUPS_MAP[subgroup]
-        except KeyError:
-            group = cls.UNCLASSIFIED_GROUP
-
+        group = cls.API_GROUPS_MAP[subgroup]
         return group
     
 
